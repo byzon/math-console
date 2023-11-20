@@ -3,6 +3,7 @@ use std::{io, str::FromStr};
 
 pub const UNICODE_CHECKMARK: &str = "\u{2714}";
 pub const UNICODE_X: &str = "\u{0078}";
+pub const UNICODE_DOT: &str = "\u{2022}";
 
 pub fn read_input<T: FromStr>() -> Result<T>
 where

@@ -8,6 +8,8 @@ use anyhow::Result;
 use game::{Game, SimpleGame};
 use generator::BasicGenerator;
 
+use utils::UNICODE_DOT;
+
 fn main() {
     env_logger::init();
 
@@ -24,7 +26,7 @@ fn main() {
 
         game.end().expect("Error ending game.");
 
-        println!("Play again? (Y/N)");
+        println!("\n{UNICODE_DOT} Play again? (Y/N)");
 
         let should_continue = utils::read_input::<String>()
             .expect("Error reading input.")

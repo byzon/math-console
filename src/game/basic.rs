@@ -7,7 +7,7 @@ use colored::Colorize;
 use std::time::Instant;
 use strum::IntoEnumIterator;
 
-use crate::utils::{UNICODE_CHECKMARK, UNICODE_X};
+use crate::utils::{UNICODE_CHECKMARK, UNICODE_DOT, UNICODE_X};
 
 use anyhow::{anyhow, Result};
 
@@ -42,13 +42,12 @@ impl SimpleGame {
     fn prompt_problem_types(&mut self) -> Result<()> {
         println!(
             r#"
-What do you want to practice? Enter 1 or more letters:
-(example: enter "m" for Multiplication, or "ads" for Addition, Division, and Subtraction)
+{UNICODE_DOT} What do you want to practice? Enter 1 or more letters:
 
-a = Addition
-s = Subtraction
-m = Multiplication
-d = Division
+    a = Addition
+    s = Subtraction
+    m = Multiplication
+    d = Division
 "#
         );
 
@@ -80,7 +79,7 @@ d = Division
     }
 
     fn prompt_total_problems(&mut self) -> Result<()> {
-        println!("How may problems do you want to do?");
+        println!("\n{UNICODE_DOT} How may problems do you want to do?");
 
         self.num_problems = read_input::<i32>().map_err(|e| handle_error(e, "Can't read input"))?;
 
@@ -88,7 +87,7 @@ d = Division
     }
 
     fn prompt_max_value(&mut self) -> Result<()> {
-        println!("What is the highest number to use the problems??");
+        println!("\n{UNICODE_DOT} What is the highest digit to use?");
 
         self.max_value = read_input::<i32>().map_err(|e| handle_error(e, "Can't read input"))?;
 
@@ -96,11 +95,13 @@ d = Division
     }
 
     fn prompt_for_answer(&self, problem_num: usize, problem: &Box<dyn Problem>) -> Result<String> {
-        println!(
+        let prompt = format!(
             "\nQuestion {} out of {}",
-            (problem_num + 1),
+            problem_num + 1,
             self.num_problems
-        );
+        )
+        .yellow();
+        println!("{prompt}");
 
         println!("{} = ", problem.get_question());
 
@@ -156,6 +157,8 @@ impl Game for SimpleGame {
     }
 
     fn end(&mut self) -> Result<()> {
+        println!("\nResults\n----------------------");
+
         let elapsed = (Instant::now() - self.start_time).as_secs_f32();
         let problems = self.generator.problems();
 
