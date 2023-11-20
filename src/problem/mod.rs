@@ -9,8 +9,9 @@ pub use multiplication::*;
 pub use subtraction::*;
 
 use std::fmt::{Display, Formatter, Result};
+use strum::EnumIter;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, EnumIter)]
 pub enum ProblemType {
     Addition,
     Subtraction,

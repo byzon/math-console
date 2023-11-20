@@ -1,14 +1,15 @@
 use super::Game;
-use crate::error::handle_error;
+use crate::error::{handle_error, AppError};
 use crate::generator::Generator;
 use crate::problem::{Problem, ProblemType};
 use crate::utils::read_input;
 use colored::Colorize;
 use std::time::Instant;
+use strum::IntoEnumIterator;
 
 use crate::utils::{UNICODE_CHECKMARK, UNICODE_X};
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 
 pub struct SimpleGame {
     generator: Box<dyn Generator>,
@@ -25,17 +26,57 @@ pub struct SimpleGame {
 }
 
 impl SimpleGame {
-    pub fn new(generator: Box<dyn Generator>, allowed_types: Vec<ProblemType>) -> Self {
+    pub fn new(generator: Box<dyn Generator>) -> Self {
         Self {
             generator,
             start_time: Instant::now(),
-            allowed_types,
+            allowed_types: vec![],
             max_value: 0,
             num_problems: 0,
             num_attempted: 0,
             num_correct: 0,
             answers: vec![],
         }
+    }
+
+    fn prompt_problem_types(&mut self) -> Result<()> {
+        println!(
+            r#"
+What do you want to practice? Enter 1 or more letters:
+(example: enter "m" for Multiplication, or "ads" for Addition, Division, and Subtraction)
+
+a = Addition
+s = Subtraction
+m = Multiplication
+d = Division
+"#
+        );
+
+        let allowed_types_input = read_input::<String>().expect("Error reading input");
+        self.allowed_types = vec![];
+        for problem_type_variant in ProblemType::iter() {
+            match problem_type_variant {
+                ProblemType::Addition if allowed_types_input.contains("a") => {
+                    self.allowed_types.push(problem_type_variant)
+                }
+                ProblemType::Subtraction if allowed_types_input.contains("s") => {
+                    self.allowed_types.push(problem_type_variant)
+                }
+                ProblemType::Multiplication if allowed_types_input.contains("m") => {
+                    self.allowed_types.push(problem_type_variant)
+                }
+                ProblemType::Division if allowed_types_input.contains("d") => {
+                    self.allowed_types.push(problem_type_variant)
+                }
+                _ => {}
+            }
+        }
+
+        if allowed_types_input.is_empty() {
+            return Err(anyhow!(AppError::InvalidInput));
+        }
+
+        Ok(())
     }
 
     fn prompt_total_problems(&mut self) -> Result<()> {
@@ -72,6 +113,12 @@ impl SimpleGame {
 
 impl Game for SimpleGame {
     fn prepare(&mut self) -> Result<()> {
+        self.prompt_problem_types()?;
+
+        Ok(())
+    }
+
+    fn start(&mut self) -> Result<()> {
         self.prompt_total_problems()?;
 
         self.prompt_max_value()?;

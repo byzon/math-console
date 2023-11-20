@@ -1,7 +1,10 @@
 use log::error;
 use std::fmt::{Display, Formatter, Result};
 
-pub struct AppError;
+#[derive(Debug)]
+pub enum AppError {
+    InvalidInput,
+}
 
 impl Display for AppError {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {

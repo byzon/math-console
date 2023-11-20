@@ -7,7 +7,6 @@ mod utils;
 use anyhow::Result;
 use game::{Game, SimpleGame};
 use generator::BasicGenerator;
-use problem::ProblemType;
 
 fn main() {
     env_logger::init();
@@ -15,12 +14,11 @@ fn main() {
     println!("Let's do some math!");
 
     loop {
-        let mut game = SimpleGame::new(
-            Box::new(BasicGenerator::new()),
-            vec![ProblemType::Multiplication],
-        );
+        let mut game = SimpleGame::new(Box::new(BasicGenerator::new()));
 
         game.prepare().expect("Error preparing game.");
+
+        game.start().expect("Error preparing game.");
 
         game.play().expect("Error playing game.");
 

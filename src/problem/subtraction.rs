@@ -8,9 +8,10 @@ pub struct Subtraction {
 
 impl Subtraction {
     pub fn new(first_digit: i32, second_digit: i32) -> Self {
+        // Make sure first is greater than second, so we avoid negative numbers.
         Self {
-            first_digit,
-            second_digit,
+            first_digit: first_digit.max(second_digit),
+            second_digit: first_digit.min(second_digit),
         }
     }
 }
