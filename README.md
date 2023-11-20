@@ -15,7 +15,10 @@ Supported configuration:
 - Highest number that can appear in a equation (lowest is 1)
 - Number of questions.
 
-<img width="484" alt="image" src="https://github.com/byzon/math-console/assets/762893/06c4ee9f-4b20-4e21-a659-6fb2b0e914c2">
+<img width="598" alt="image" src="https://github.com/byzon/math-console/assets/762893/541a2a35-1a00-499f-8b2c-62f44a0d143e">
+
+
+
 
 
 
