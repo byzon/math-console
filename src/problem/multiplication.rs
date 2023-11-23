@@ -33,3 +33,20 @@ impl Problem for Multiplication {
         self.first_digit * self.second_digit
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_gets_question() {
+        let problem = Multiplication::new(3, 4);
+        assert_eq!(problem.get_question(), "3 * 4");
+    }
+
+    #[test]
+    fn test_gets_question_with_solution() {
+        let problem = Multiplication::new(3, 4);
+        assert_eq!(problem.get_question_with_solution(), "3 * 4 = 12");
+    }
+}

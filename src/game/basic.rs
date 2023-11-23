@@ -103,7 +103,8 @@ impl SimpleGame {
         .yellow();
         println!("{prompt}");
 
-        println!("{} = ", problem.get_question());
+        let question = problem.get_question().purple();
+        println!("{} = ", question);
 
         let input =
             read_input::<String>().map_err(|e| handle_error(e, "Can't read answer input"))?;

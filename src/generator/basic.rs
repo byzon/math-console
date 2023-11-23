@@ -66,3 +66,19 @@ impl Generator for BasicGenerator {
         &self.problems
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::problem::ProblemType;
+
+    #[test]
+    fn test_generates_with_correct_number() {
+        let mut generator = BasicGenerator::new();
+        generator
+            .generate(5, 10, &vec![ProblemType::Multiplication])
+            .unwrap();
+
+        assert_eq!(generator.problems.len(), 5);
+    }
+}
