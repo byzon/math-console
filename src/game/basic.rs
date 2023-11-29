@@ -17,6 +17,7 @@ pub struct SimpleGame {
     start_time: Instant,
 
     allowed_types: Vec<ProblemType>,
+    min_value: i32,
     max_value: i32,
 
     num_problems: i32,
@@ -31,6 +32,7 @@ impl SimpleGame {
             generator,
             start_time: Instant::now(),
             allowed_types: vec![],
+            min_value: 0,
             max_value: 0,
             num_problems: 0,
             num_attempted: 0,
@@ -72,7 +74,9 @@ impl SimpleGame {
         }
 
         if allowed_types_input.is_empty() {
-            return Err(anyhow!(AppError::InvalidInput));
+            return Err(anyhow!(AppError::InvalidInput(
+                "No valid allowed types entered.".to_owned()
+            )));
         }
 
         Ok(())
@@ -86,10 +90,25 @@ impl SimpleGame {
         Ok(())
     }
 
+    fn prompt_min_value(&mut self) -> Result<()> {
+        println!("\n{UNICODE_DOT} What is the lowest digit to use?");
+
+        self.min_value = read_input::<i32>().map_err(|e| handle_error(e, "Can't read input"))?;
+
+        Ok(())
+    }
+
     fn prompt_max_value(&mut self) -> Result<()> {
         println!("\n{UNICODE_DOT} What is the highest digit to use?");
 
-        self.max_value = read_input::<i32>().map_err(|e| handle_error(e, "Can't read input"))?;
+        let max_value = read_input::<i32>().map_err(|e| handle_error(e, "Can't read input"))?;
+        if max_value < self.min_value {
+            return Err(anyhow!(AppError::InvalidInput(
+                "Max value must be greater or equal to min value".to_owned()
+            )));
+        }
+
+        self.max_value = max_value;
 
         Ok(())
     }
@@ -123,10 +142,17 @@ impl Game for SimpleGame {
     fn start(&mut self) -> Result<()> {
         self.prompt_total_problems()?;
 
+        self.prompt_min_value()?;
+
         self.prompt_max_value()?;
 
         self.generator
-            .generate(self.num_problems, self.max_value, &self.allowed_types)
+            .generate(
+                self.num_problems,
+                self.min_value,
+                self.max_value,
+                &self.allowed_types,
+            )
             .map_err(|e| handle_error(e, "Can't generate problems"))?;
 
         Ok(())

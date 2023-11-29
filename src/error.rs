@@ -3,7 +3,7 @@ use std::fmt::{Display, Formatter, Result};
 
 #[derive(Debug)]
 pub enum AppError {
-    InvalidInput,
+    InvalidInput(String),
 }
 
 impl Display for AppError {

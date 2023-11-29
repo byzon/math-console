@@ -9,6 +9,7 @@ pub trait Generator {
     fn generate(
         &mut self,
         count: i32,
+        min_value: i32,
         max_value: i32,
         allowed_types: &Vec<ProblemType>,
     ) -> Result<()>;
