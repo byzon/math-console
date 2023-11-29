@@ -4,7 +4,7 @@ use crate::generator::Generator;
 use crate::problem::{Problem, ProblemType};
 use crate::utils::read_input;
 use colored::Colorize;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use strum::IntoEnumIterator;
 
 use crate::utils::{UNICODE_CHECKMARK, UNICODE_DOT, UNICODE_X};
@@ -130,6 +130,23 @@ impl SimpleGame {
 
         Ok(input)
     }
+
+    fn get_final_result(&self) -> String {
+        let elapsed = (Instant::now() - self.start_time).as_secs_f32();
+        let percent = ((self.num_correct as f32 / self.num_attempted as f32) * 100.0).floor();
+        let time_display = match elapsed {
+            x if x < 60.0 => format!("{elapsed:.2} seconds"),
+            _ => {
+                let minutes: f32 = elapsed / 60.0;
+                format!("{minutes:.2} minutes")
+            }
+        };
+
+        format!(
+            "\nYou got {} out of {} ({}%) in {time_display}",
+            self.num_correct, self.num_attempted, percent
+        )
+    }
 }
 
 impl Game for SimpleGame {
@@ -186,7 +203,6 @@ impl Game for SimpleGame {
     fn end(&mut self) -> Result<()> {
         println!("\nResults\n----------------------");
 
-        let elapsed = (Instant::now() - self.start_time).as_secs_f32();
         let problems = self.generator.problems();
 
         for i in 0..self.num_attempted {
@@ -201,21 +217,16 @@ impl Game for SimpleGame {
                 );
             } else {
                 println!(
-                    "{} {} = {} ({})",
+                    "{} {} = {}",
                     UNICODE_X.red(),
                     problem.get_question(),
                     answer.red(),
-                    solution.green()
                 );
             }
         }
 
-        let percent = ((self.num_correct as f32 / self.num_attempted as f32) * 100.0).floor();
-
-        println!(
-            "\nYou got {} out of {} ({}%) in {:.2} seconds",
-            self.num_correct, self.num_attempted, percent, elapsed
-        );
+        let final_result = self.get_final_result();
+        println!("{final_result}");
 
         Ok(())
     }
